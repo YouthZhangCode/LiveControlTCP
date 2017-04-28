@@ -10,9 +10,6 @@
 
 @interface AsyncSocketManager ()<AsyncSocketDelegate>
 
-@property (nonatomic, assign) NSInteger connectTimes;
-@property (nonatomic, assign) BOOL isTimerRunning;
-
 @end
 
 @implementation AsyncSocketManager
@@ -27,12 +24,7 @@
 }
 
 - (void)createSocket {
-    
     self.socket = [[AsyncSocket alloc] initWithDelegate:self];
-    
-    _connectHostTimer = [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(socketConnectHost) userInfo:nil repeats:YES];
-    _isTimerRunning = YES;
-    _connectTimes = 0;
 }
 
 
@@ -43,22 +35,20 @@
         [self.socket disconnect];
     }
     
-    [self.socket connectToHost:self.socketIPHost onPort:self.socketPort withTimeout:0.9 error:nil];
-    
-    _connectTimes++;
-    NSString* connectTimesString = [NSString stringWithFormat:@"重连_______%ld次", _connectTimes];
-    
-    if ([self.receiveMessageDelegate respondsToSelector:@selector(onSocketReceiveMessage:)]) {
-        [self.receiveMessageDelegate onSocketReceiveMessage:connectTimesString];
+    [self.socket connectToHost:self.socketIPHost onPort:self.socketPort withTimeout:self.timeout error:nil];
+}
+
+//发送完消息后 断开连接
+- (void)disconnect {
+    if ([self.socket isConnected]) {
+        [self.socket disconnect];
     }
-    
 }
 
 #pragma mark - SocketDelegate
 
-- (void)sendMessage:(NSString *)message {
+- (void)sendMessage:(NSData *)data {
     
-    NSData *data = [message dataUsingEncoding:NSUTF8StringEncoding];
     [self.socket writeData:data withTimeout:-1 tag:0];
 }
 
@@ -69,9 +59,7 @@
 
 - (void)onSocket:(AsyncSocket *)sock didConnectToHost:(NSString *)host port:(UInt16)port {
     NSLog(@"didConnectToHost");
-    [_connectHostTimer setFireDate:[NSDate distantFuture]];
-    _isTimerRunning = NO;
-    
+    [self.socket readDataWithTimeout:-1 tag:0];
 }
 
 - (void)onSocket:(AsyncSocket *)sock willDisconnectWithError:(NSError *)err {
@@ -80,18 +68,22 @@
 
 - (void)onSocketDidDisconnect:(AsyncSocket *)sock {
     NSLog(@"didDisconnect");
-    if (_isTimerRunning == NO) {
-        [_connectHostTimer setFireDate:[NSDate distantPast]];
-        _isTimerRunning = YES;
-    }
 }
 
 
 - (void)onSocket:(AsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag {
     
+//    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
+    
+    if ([self.receiveMessageDelegate respondsToSelector:@selector(onSocketReceiveMessage:)]) {
+        [self.receiveMessageDelegate onSocketReceiveMessage:@"111"];
+    }
     [self.socket readDataWithTimeout:-1 tag:0];
-}
 
+    
+    //收到消息后 断开连接 下一次重新连接
+    [self disconnect];
+}
 
 
 @end

@@ -27,7 +27,6 @@ typedef enum : NSUInteger {
 @property (nonatomic, assign) UInt16 socketPort;
 @property (nonatomic, assign) CGFloat timeout;
 @property (nonatomic, assign) SocketOfflineType offlineType;
-@property (nonatomic, assign) NSTimer *connectHostTimer;
 
 @property (nonatomic, weak) id<SocketReceiveMessageDelegate>receiveMessageDelegate;
 
@@ -38,8 +37,9 @@ typedef enum : NSUInteger {
 //连接
 - (void)socketConnectHost;
 
+- (void)disconnect;
 
-- (void)sendMessage:(NSString *)message;
+- (void)sendMessage:(NSData *)data;
 
 
 
