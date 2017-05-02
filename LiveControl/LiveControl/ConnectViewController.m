@@ -15,6 +15,7 @@ NSString *const kLIVE_SIGNUP = @"APP_REQ_MACHINE_SIGNUP_PLAYER";
 NSString *const kLIVE_SWITCH = @"APP_REQ_SWITCH_PLAYER_LIVE_VIDEO";
 NSString *const hostIP = @"192.168.1.219";
 
+
 CGFloat const timeOut = 0.6;
 
 @interface ConnectViewController ()<SocketReceiveMessageDelegate>
