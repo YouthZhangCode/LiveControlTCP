@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		04151CCB1EB8C098005F1BC7 /* GitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 04151CCA1EB8C098005F1BC7 /* GitTest.m */; };
 		06460BEA1EAEEEBA008B2263 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 06460BE91EAEEEBA008B2263 /* main.m */; };
 		06460BED1EAEEEBA008B2263 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 06460BEC1EAEEEBA008B2263 /* AppDelegate.m */; };
 		06460BF01EAEEEBA008B2263 /* ConnectViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 06460BEF1EAEEEBA008B2263 /* ConnectViewController.m */; };
@@ -33,6 +34,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		04151CC91EB8C098005F1BC7 /* GitTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GitTest.h; sourceTree = "<group>"; };
+		04151CCA1EB8C098005F1BC7 /* GitTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GitTest.m; sourceTree = "<group>"; };
 		06460BE51EAEEEBA008B2263 /* LiveControl.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiveControl.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		06460BE91EAEEEBA008B2263 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		06460BEB1EAEEEBA008B2263 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -109,6 +112,8 @@
 				06460BEF1EAEEEBA008B2263 /* ConnectViewController.m */,
 				06E7A8031EB0A91C004F923E /* AsyncSocketManager.h */,
 				06E7A8041EB0A91C004F923E /* AsyncSocketManager.m */,
+				04151CC91EB8C098005F1BC7 /* GitTest.h */,
+				04151CCA1EB8C098005F1BC7 /* GitTest.m */,
 				06460BF11EAEEEBA008B2263 /* Main.storyboard */,
 				06460BF41EAEEEBA008B2263 /* Assets.xcassets */,
 				06460BF61EAEEEBA008B2263 /* LaunchScreen.storyboard */,
@@ -333,6 +338,7 @@
 				06460BED1EAEEEBA008B2263 /* AppDelegate.m in Sources */,
 				06460BEA1EAEEEBA008B2263 /* main.m in Sources */,
 				06460C061EAEF6DD008B2263 /* AsyncSocket.m in Sources */,
+				04151CCB1EB8C098005F1BC7 /* GitTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
