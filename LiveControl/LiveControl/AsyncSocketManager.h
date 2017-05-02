@@ -16,7 +16,7 @@ typedef enum : NSUInteger {
 
 @protocol SocketReceiveMessageDelegate <NSObject>
 
-- (void)onSocketReceiveMessage:(NSString *)message;
+- (void)onSocketReceiveDictionary:(NSDictionary *)dict;
 
 @end
 

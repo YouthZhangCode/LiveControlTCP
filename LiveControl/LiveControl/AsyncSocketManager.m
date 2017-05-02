@@ -73,10 +73,10 @@
 
 - (void)onSocket:(AsyncSocket *)sock didReadData:(NSData *)data withTag:(long)tag {
     
-//    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
+    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableLeaves error:nil];
     
-    if ([self.receiveMessageDelegate respondsToSelector:@selector(onSocketReceiveMessage:)]) {
-        [self.receiveMessageDelegate onSocketReceiveMessage:@"111"];
+    if ([self.receiveMessageDelegate respondsToSelector:@selector(onSocketReceiveDictionary:)]) {
+        [self.receiveMessageDelegate onSocketReceiveDictionary:dict];
     }
     [self.socket readDataWithTimeout:-1 tag:0];
 

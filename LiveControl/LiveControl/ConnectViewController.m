@@ -15,7 +15,7 @@ NSString *const kLIVE_SIGNUP = @"APP_REQ_MACHINE_SIGNUP_PLAYER";
 NSString *const kLIVE_SWITCH = @"APP_REQ_SWITCH_PLAYER_LIVE_VIDEO";
 NSString *const hostIP = @"192.168.1.219";
 
-CGFloat const timeOut = 1.0;
+CGFloat const timeOut = 0.6;
 
 @interface ConnectViewController ()<SocketReceiveMessageDelegate>
 
@@ -33,6 +33,18 @@ CGFloat const timeOut = 1.0;
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
+    UIView *statueBarView = [[UIView alloc] initWithFrame:CGRectMake(0, -20, ScreenWidth, 20)];
+    statueBarView.backgroundColor = [UIColor blackColor];
+    [self.navigationController.navigationBar addSubview:statueBarView];
+    self.navigationController.navigationBar.translucent = NO;
+    
+    UIImage *barIamge = [[UIImage imageNamed:@"biaoqianlan"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
+    UIImageView *barIamgeView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 44)];
+    barIamgeView.image = barIamge;
+    
+    [self.navigationController.navigationBar addSubview:barIamgeView];
+    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
+    
     //初始化 socket 的配置信息
     [AsyncSocketManager sharedManager].socketIPHost = hostIP;
     [AsyncSocketManager sharedManager].receiveMessageDelegate = self;
@@ -44,14 +56,12 @@ CGFloat const timeOut = 1.0;
     [self forTest];
 }
 
+
+
 - (void)createUI {
     
-    UIImageView *topImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 20.f, ScreenWidth, 44.f)];
-    [topImageView setImage:[UIImage imageNamed:@"biaoqianlan"]];
-    [self.view addSubview:topImageView];
-    
     CGFloat lineHeight = ScreenHeight*19.5/128.f;
-    CGFloat addjustHeight = 45.f;
+    CGFloat addjustHeight = -10.f;
     
     for (int i = 0; i < 4; i++) {
         UIImageView *headImageView = [[UIImageView alloc] initWithFrame:CGRectMake(25, ScreenHeight*7.2/128+i*lineHeight+addjustHeight, ScreenWidth*15/75, ScreenWidth*15/75)];
@@ -60,29 +70,20 @@ CGFloat const timeOut = 1.0;
         headImageView.image = headImage;
         [self.view addSubview:headImageView];
         
-        UIButton *refreshButton = [UIButton buttonWithType:UIButtonTypeSystem];
-        refreshButton.frame = CGRectMake(ScreenWidth*37/75, ScreenHeight*12.6/128+i*lineHeight+addjustHeight, ScreenWidth*16/75, ScreenHeight*6/128);
-        refreshButton.layer.borderWidth = 1.f;
-        refreshButton.layer.cornerRadius = 5.f;
-        refreshButton.clipsToBounds = YES;
-        refreshButton.layer.borderColor = [UIColor redColor].CGColor;
-        [refreshButton setTitle:@"刷新" forState:UIControlStateNormal];
-        [refreshButton.titleLabel setFont:[UIFont systemFontOfSize:ScreenHeight*3/128.f]];
-        [refreshButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+        UIButton *refreshButton = [[UIButton alloc] initWithFrame:CGRectMake(ScreenWidth*37/75, ScreenHeight*11/128+i*lineHeight+addjustHeight, ScreenWidth*16/75, ScreenHeight*6/128)];
+        [refreshButton setBackgroundImage:[UIImage imageNamed:@"shuaxinN"] forState:UIControlStateNormal];
+        [refreshButton setBackgroundImage:[UIImage imageNamed:@"shuaxinS"] forState:UIControlStateHighlighted];
+        refreshButton.adjustsImageWhenHighlighted = NO;
+
         [self.view addSubview:refreshButton];
         [refreshButton addTarget:self action:@selector(refreshButtonClick:) forControlEvents:UIControlEventTouchUpInside];
         refreshButton.tag = 100+10*i+1;
         
 
-        UIButton *switchButton = [UIButton buttonWithType:UIButtonTypeSystem];
-        [switchButton setFrame:CGRectMake(ScreenWidth*55/75, ScreenHeight*12.6/128+i*lineHeight+addjustHeight, ScreenWidth*16/75, ScreenHeight*6/128)];
-        switchButton.layer.borderWidth = 1.f;
-        switchButton.layer.cornerRadius = 5.f;
-        switchButton.clipsToBounds = YES;
-        switchButton.layer.borderColor = [UIColor redColor].CGColor;
-        [switchButton setTitle:@"切换" forState:UIControlStateNormal];
-        [switchButton.titleLabel setFont:[UIFont systemFontOfSize:ScreenHeight*3/128.f]];
-        [switchButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+        UIButton *switchButton = [[UIButton alloc] initWithFrame:CGRectMake(ScreenWidth*55/75, ScreenHeight*11/128+i*lineHeight+addjustHeight, ScreenWidth*16/75, ScreenHeight*6/128)];
+        [switchButton setBackgroundImage:[UIImage imageNamed:@"qiehuanN"] forState:UIControlStateNormal];
+        [switchButton setBackgroundImage:[UIImage imageNamed:@"qiehuanS"] forState:UIControlStateHighlighted];
+        switchButton.adjustsImageWhenHighlighted = NO;
 
         [self.view addSubview:switchButton];
         [switchButton addTarget:self action:@selector(switchButtonClick:) forControlEvents:UIControlEventTouchUpInside];
@@ -91,24 +92,22 @@ CGFloat const timeOut = 1.0;
         UIView *bottomLine = [[UIView alloc] initWithFrame:CGRectMake(ScreenWidth*11/75, ScreenHeight*24/128+i*lineHeight+addjustHeight, ScreenWidth*63/75, 1)];
         bottomLine.backgroundColor = [UIColor lightGrayColor];
         [self.view addSubview:bottomLine];
-        
     }
     
     for (int i = 0; i < 2; i++) {
         
-        UIButton *nextStepButton = [UIButton buttonWithType:UIButtonTypeSystem];
-        nextStepButton.frame = CGRectMake(30+ScreenWidth*i/2, ScreenHeight*92/128, ScreenWidth/2-60, 40);
-        
-
-        
-        [nextStepButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
+        UIButton *nextStepButton = [[UIButton alloc] initWithFrame:CGRectMake(ScreenWidth*12/75, ScreenHeight*(85.f/128+i*135.f/1280), ScreenWidth*51/75, ScreenHeight*86/1200)];
+        nextStepButton.adjustsImageWhenHighlighted = NO;
         if (i == 0) {
-//            [nextStepButton setTitle:@"复位" forState:UIControlStateNormal];
+            [nextStepButton setBackgroundImage:[UIImage imageNamed:@"fuweiN"] forState:UIControlStateNormal];
+            [nextStepButton setBackgroundImage:[UIImage imageNamed:@"fuweiS"] forState:UIControlStateHighlighted];
+            [nextStepButton setBackgroundColor:[UIColor lightGrayColor]];
+            nextStepButton.userInteractionEnabled = NO;
         }else {
-//            [nextStepButton setTitle:@"下一步" forState:UIControlStateNormal];
+            [nextStepButton setBackgroundImage:[UIImage imageNamed:@"xiayibuN"] forState:UIControlStateNormal];
+            [nextStepButton setBackgroundImage:[UIImage imageNamed:@"xiayibuS"] forState:UIControlStateHighlighted];
         }
-        [nextStepButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
-        [nextStepButton.titleLabel setFont:[UIFont systemFontOfSize:20.f]];
+
         [nextStepButton addTarget:self action:@selector(nextStepButtonClick:) forControlEvents:UIControlEventTouchUpInside];
         nextStepButton.tag = 200+i;
         [self.view addSubview:nextStepButton];
@@ -117,6 +116,11 @@ CGFloat const timeOut = 1.0;
 
 
 - (void)refreshButtonClick:(UIButton *)button {
+    
+    button.userInteractionEnabled = NO;
+    [NSTimer scheduledTimerWithTimeInterval:0.7 repeats:NO block:^(NSTimer * _Nonnull timer) {
+        button.userInteractionEnabled = YES;
+    }];
     
     //点击按钮 连接host
     [[AsyncSocketManager sharedManager] socketConnectHost];
@@ -149,6 +153,10 @@ CGFloat const timeOut = 1.0;
 }
 
 - (void)switchButtonClick:(UIButton *)button {
+    button.userInteractionEnabled = NO;
+    [NSTimer scheduledTimerWithTimeInterval:0.7 repeats:NO block:^(NSTimer * _Nonnull timer) {
+        button.userInteractionEnabled = YES;
+    }];
     
     NSNumber *number = [[NSNumber alloc] init];
     
@@ -176,20 +184,26 @@ CGFloat const timeOut = 1.0;
     NSDictionary *dict = @{@"index":number, @"cmd":kLIVE_SWITCH};
     NSData *data = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:nil];
      [[AsyncSocketManager sharedManager] sendMessage:data];
+    
 }
 
 - (void)nextStepButtonClick:(UIButton *)button {
+    button.userInteractionEnabled = NO;
+    [NSTimer scheduledTimerWithTimeInterval:0.7 repeats:NO block:^(NSTimer * _Nonnull timer) {
+        button.userInteractionEnabled = YES;
+    }];
     
     [[AsyncSocketManager sharedManager] socketConnectHost];
     NSDictionary *dict = @{@"cmd":kLIVE_NEXT};
     NSData *data = [NSJSONSerialization dataWithJSONObject:dict options:NSJSONWritingPrettyPrinted error:nil];
+    
+//    if (button.tag == 200) {
+//        
+//    }else {
+//    
+//    }
+    
     [[AsyncSocketManager sharedManager] sendMessage:data];
-    if (button.tag == 200) {
-        
-    }else {
-    
-    }
-    
 }
 
 - (void)forTest {
@@ -208,13 +222,13 @@ CGFloat const timeOut = 1.0;
 - (void)connectButtonClick:(UIButton *)button {
     [AsyncSocketManager sharedManager].socketIPHost = self.IPTextField.text;
     [AsyncSocketManager sharedManager].socketPort = SocketPort;
-    [AsyncSocketManager sharedManager].timeout = 0.5;
+    [AsyncSocketManager sharedManager].timeout = timeOut;
     [[AsyncSocketManager sharedManager] socketConnectHost];
     
 }
 
-- (void)onSocketReceiveMessage:(NSString *)message {
-    self.IPTextField.text = message;
+- (void)onSocketReceiveDictionary:(NSDictionary *)dict {
+    NSLog(@"收到服务器返回数据\n%@", dict);
 }
 
 

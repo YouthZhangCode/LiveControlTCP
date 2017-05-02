@@ -21,12 +21,15 @@
     
     
     ConnectViewController *connectVC = [[ConnectViewController alloc] init];
+    UINavigationController *connectNC = [[UINavigationController alloc] initWithRootViewController:connectVC];
     
     self.window = [[UIWindow alloc] initWithFrame:[UIScreen mainScreen].bounds];
-    [self.window setRootViewController:connectVC];
+    [self.window setRootViewController:connectNC];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     
+    
+
     return YES;
 }
 
