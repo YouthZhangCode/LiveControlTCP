@@ -17,6 +17,7 @@ NSString *const hostIP = @"192.168.1.219";
 
 NSString *const gitTest11 = @"111";
 
+
 CGFloat const timeOut = 0.6;
 
 @interface ConnectViewController ()<SocketReceiveMessageDelegate>
