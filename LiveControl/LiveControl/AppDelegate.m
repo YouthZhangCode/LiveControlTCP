@@ -27,8 +27,6 @@
     [self.window setRootViewController:connectNC];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
-    
-    
 
     return YES;
 }

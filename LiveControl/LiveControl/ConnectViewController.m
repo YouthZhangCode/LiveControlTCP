@@ -9,24 +9,17 @@
 #import "ConnectViewController.h"
 #import "AsyncSocketManager.h"
 
-NSInteger const SocketPort = 9001;
-NSString *const kLIVE_NEXT = @"APP_REQ_NEXT_SCENE";
+NSInteger const SocketPort =   9001;
+NSString *const kLIVE_NEXT =   @"APP_REQ_NEXT_SCENE";
 NSString *const kLIVE_SIGNUP = @"APP_REQ_MACHINE_SIGNUP_PLAYER";
 NSString *const kLIVE_SWITCH = @"APP_REQ_SWITCH_PLAYER_LIVE_VIDEO";
-NSString *const hostIP = @"192.168.1.219";
-
-NSString *const gitTest11 = @"111";
-
-
-CGFloat const timeOut = 0.6;
+NSString *const hostIP =       @"192.168.1.219";
+CGFloat   const timeOut =      0.6;
 
 @interface ConnectViewController ()<SocketReceiveMessageDelegate>
 
 @property (nonatomic, strong) UITextField *IPTextField;
 @property (nonatomic, strong) UIButton *connectButton;
-
-@property (nonatomic, strong) AsyncSocketManager *socketManager;
-
 
 @end
 
@@ -36,17 +29,14 @@ CGFloat const timeOut = 0.6;
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     
-    UIView *statueBarView = [[UIView alloc] initWithFrame:CGRectMake(0, -20, ScreenWidth, 20)];
-    statueBarView.backgroundColor = [UIColor blackColor];
-    [self.navigationController.navigationBar addSubview:statueBarView];
+    self.navigationController.navigationBar.barStyle = UIBarStyleBlack;
+    [UIApplication sharedApplication].statusBarStyle = UIStatusBarStyleLightContent;
     self.navigationController.navigationBar.translucent = NO;
     
     UIImage *barIamge = [[UIImage imageNamed:@"biaoqianlan"] imageWithRenderingMode:UIImageRenderingModeAlwaysOriginal];
     UIImageView *barIamgeView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidth, 44)];
     barIamgeView.image = barIamge;
-    
     [self.navigationController.navigationBar addSubview:barIamgeView];
-    [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     
     //初始化 socket 的配置信息
     [AsyncSocketManager sharedManager].socketIPHost = hostIP;
@@ -56,10 +46,7 @@ CGFloat const timeOut = 0.6;
     [[AsyncSocketManager sharedManager] createSocket];
     
     [self createUI];
-    [self forTest];
 }
-
-
 
 - (void)createUI {
     
@@ -98,7 +85,7 @@ CGFloat const timeOut = 0.6;
     }
     
     for (int i = 0; i < 2; i++) {
-        
+
         UIButton *nextStepButton = [[UIButton alloc] initWithFrame:CGRectMake(ScreenWidth*12/75, ScreenHeight*(85.f/128+i*135.f/1280), ScreenWidth*51/75, ScreenHeight*86/1200)];
         nextStepButton.adjustsImageWhenHighlighted = NO;
         if (i == 0) {
@@ -110,21 +97,19 @@ CGFloat const timeOut = 0.6;
             [nextStepButton setBackgroundImage:[UIImage imageNamed:@"xiayibuN"] forState:UIControlStateNormal];
             [nextStepButton setBackgroundImage:[UIImage imageNamed:@"xiayibuS"] forState:UIControlStateHighlighted];
         }
-
+        
         [nextStepButton addTarget:self action:@selector(nextStepButtonClick:) forControlEvents:UIControlEventTouchUpInside];
         nextStepButton.tag = 200+i;
         [self.view addSubview:nextStepButton];
     }
 }
 
-
 - (void)refreshButtonClick:(UIButton *)button {
     
     button.userInteractionEnabled = NO;
-    [NSTimer scheduledTimerWithTimeInterval:0.7 repeats:NO block:^(NSTimer * _Nonnull timer) {
-        button.userInteractionEnabled = YES;
-    }];
+    NSNumber *userInfo = [NSNumber numberWithInteger:button.tag];
     
+    [NSTimer scheduledTimerWithTimeInterval:0.7 target:self selector:@selector(makeButtonEnabled:) userInfo:userInfo repeats:NO];
     //点击按钮 连接host
     [[AsyncSocketManager sharedManager] socketConnectHost];
     
@@ -153,13 +138,15 @@ CGFloat const timeOut = 0.6;
     
     [[AsyncSocketManager sharedManager] sendMessage:data];
     
+
 }
 
 - (void)switchButtonClick:(UIButton *)button {
+    
     button.userInteractionEnabled = NO;
-    [NSTimer scheduledTimerWithTimeInterval:0.7 repeats:NO block:^(NSTimer * _Nonnull timer) {
-        button.userInteractionEnabled = YES;
-    }];
+    NSNumber *userInfo = [NSNumber numberWithInteger:button.tag];
+    
+    [NSTimer scheduledTimerWithTimeInterval:0.7 target:self selector:@selector(makeButtonEnabled:) userInfo:userInfo repeats:NO];
     
     NSNumber *number = [[NSNumber alloc] init];
     
@@ -191,10 +178,11 @@ CGFloat const timeOut = 0.6;
 }
 
 - (void)nextStepButtonClick:(UIButton *)button {
+    
     button.userInteractionEnabled = NO;
-    [NSTimer scheduledTimerWithTimeInterval:0.7 repeats:NO block:^(NSTimer * _Nonnull timer) {
-        button.userInteractionEnabled = YES;
-    }];
+    NSNumber *userInfo = [NSNumber numberWithInteger:button.tag];
+    
+    [NSTimer scheduledTimerWithTimeInterval:0.7 target:self selector:@selector(makeButtonEnabled:) userInfo:userInfo repeats:NO];
     
     [[AsyncSocketManager sharedManager] socketConnectHost];
     NSDictionary *dict = @{@"cmd":kLIVE_NEXT};
@@ -205,10 +193,16 @@ CGFloat const timeOut = 0.6;
 //    }else {
 //    
 //    }
-    
     [[AsyncSocketManager sharedManager] sendMessage:data];
 }
 
+- (void)makeButtonEnabled:(id)timer {
+    NSInteger tag = [[timer userInfo] integerValue];
+    UIButton *button = (UIButton *)[self.view viewWithTag:tag];
+    button.userInteractionEnabled = YES;
+}
+
+#pragma mark - 填写IP地址
 - (void)forTest {
     _IPTextField = [[UITextField alloc] initWithFrame:CGRectMake(20, ScreenHeight - 40, ScreenWidth - 100, 30)];
     _IPTextField.borderStyle = UITextBorderStyleLine;
@@ -219,7 +213,6 @@ CGFloat const timeOut = 0.6;
     [_connectButton setTitle:@"连接" forState:UIControlStateNormal];
     [self.view addSubview:_connectButton];
     [_connectButton addTarget:self action:@selector(connectButtonClick:) forControlEvents:UIControlEventTouchUpInside];
-    
 }
 
 - (void)connectButtonClick:(UIButton *)button {
@@ -227,13 +220,12 @@ CGFloat const timeOut = 0.6;
     [AsyncSocketManager sharedManager].socketPort = SocketPort;
     [AsyncSocketManager sharedManager].timeout = timeOut;
     [[AsyncSocketManager sharedManager] socketConnectHost];
-    
 }
 
+#pragma mark - 从SocketManager 回调到
 - (void)onSocketReceiveDictionary:(NSDictionary *)dict {
     NSLog(@"收到服务器返回数据\n%@", dict);
 }
-
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event {
     [self.view endEditing:YES];
@@ -243,6 +235,5 @@ CGFloat const timeOut = 0.6;
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
-
 
 @end
