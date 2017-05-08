@@ -27,7 +27,10 @@
     [self.window setRootViewController:connectNC];
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
-
+    
+    //防止两个button被同时点击
+    [[UIButton appearance] setExclusiveTouch:YES];
+    
     return YES;
 }
 

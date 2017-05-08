@@ -16,7 +16,9 @@ NSString *const kLIVE_SWITCH = @"APP_REQ_SWITCH_PLAYER_LIVE_VIDEO";
 NSString *const hostIP =       @"192.168.1.219";
 CGFloat   const timeOut =      0.6;
 
-@interface ConnectViewController ()<SocketReceiveMessageDelegate>
+@interface ConnectViewController ()<SocketReceiveMessageDelegate>{
+    UIView *_bottomView;
+}
 
 @property (nonatomic, strong) UITextField *IPTextField;
 @property (nonatomic, strong) UIButton *connectButton;
@@ -66,7 +68,7 @@ CGFloat   const timeOut =      0.6;
         refreshButton.adjustsImageWhenHighlighted = NO;
 
         [self.view addSubview:refreshButton];
-        [refreshButton addTarget:self action:@selector(refreshButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+        [refreshButton addTarget:self action:@selector(refreshButtonClick:) forControlEvents:UIControlEventTouchDown];
         refreshButton.tag = 100+10*i+1;
         
 
@@ -76,7 +78,7 @@ CGFloat   const timeOut =      0.6;
         switchButton.adjustsImageWhenHighlighted = NO;
 
         [self.view addSubview:switchButton];
-        [switchButton addTarget:self action:@selector(switchButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+        [switchButton addTarget:self action:@selector(switchButtonClick:) forControlEvents:UIControlEventTouchDown];
         switchButton.tag = 100+10*i+2;
         
         UIView *bottomLine = [[UIView alloc] initWithFrame:CGRectMake(ScreenWidth*11/75, ScreenHeight*24/128+i*lineHeight+addjustHeight, ScreenWidth*63/75, 1)];
@@ -98,18 +100,22 @@ CGFloat   const timeOut =      0.6;
             [nextStepButton setBackgroundImage:[UIImage imageNamed:@"xiayibuS"] forState:UIControlStateHighlighted];
         }
         
-        [nextStepButton addTarget:self action:@selector(nextStepButtonClick:) forControlEvents:UIControlEventTouchUpInside];
+        [nextStepButton addTarget:self action:@selector(nextStepButtonClick:) forControlEvents:UIControlEventTouchDown];
         nextStepButton.tag = 200+i;
         [self.view addSubview:nextStepButton];
     }
+    
+    _bottomView = [[UIView alloc] initWithFrame:self.view.bounds];
+    _bottomView.backgroundColor = [UIColor clearColor];
+    _bottomView.userInteractionEnabled = NO;
+    [self.view addSubview:_bottomView];
 }
 
 - (void)refreshButtonClick:(UIButton *)button {
     
-    button.userInteractionEnabled = NO;
-    NSNumber *userInfo = [NSNumber numberWithInteger:button.tag];
+    _bottomView.userInteractionEnabled = YES;
     
-    [NSTimer scheduledTimerWithTimeInterval:0.7 target:self selector:@selector(makeButtonEnabled:) userInfo:userInfo repeats:NO];
+    [NSTimer scheduledTimerWithTimeInterval:0.7 target:self selector:@selector(makeBottomViewUenable) userInfo:nil repeats:NO];
     //点击按钮 连接host
     [[AsyncSocketManager sharedManager] socketConnectHost];
     
@@ -143,10 +149,9 @@ CGFloat   const timeOut =      0.6;
 
 - (void)switchButtonClick:(UIButton *)button {
     
-    button.userInteractionEnabled = NO;
-    NSNumber *userInfo = [NSNumber numberWithInteger:button.tag];
+    _bottomView.userInteractionEnabled = YES;
     
-    [NSTimer scheduledTimerWithTimeInterval:0.7 target:self selector:@selector(makeButtonEnabled:) userInfo:userInfo repeats:NO];
+    [NSTimer scheduledTimerWithTimeInterval:0.7 target:self selector:@selector(makeBottomViewUenable) userInfo:nil repeats:NO];
     
     NSNumber *number = [[NSNumber alloc] init];
     
@@ -179,10 +184,10 @@ CGFloat   const timeOut =      0.6;
 
 - (void)nextStepButtonClick:(UIButton *)button {
     
-    button.userInteractionEnabled = NO;
-    NSNumber *userInfo = [NSNumber numberWithInteger:button.tag];
     
-    [NSTimer scheduledTimerWithTimeInterval:0.7 target:self selector:@selector(makeButtonEnabled:) userInfo:userInfo repeats:NO];
+    _bottomView.userInteractionEnabled = YES;
+    
+    [NSTimer scheduledTimerWithTimeInterval:0.7 target:self selector:@selector(makeBottomViewUenable) userInfo:nil repeats:NO];
     
     [[AsyncSocketManager sharedManager] socketConnectHost];
     NSDictionary *dict = @{@"cmd":kLIVE_NEXT};
@@ -196,10 +201,8 @@ CGFloat   const timeOut =      0.6;
     [[AsyncSocketManager sharedManager] sendMessage:data];
 }
 
-- (void)makeButtonEnabled:(id)timer {
-    NSInteger tag = [[timer userInfo] integerValue];
-    UIButton *button = (UIButton *)[self.view viewWithTag:tag];
-    button.userInteractionEnabled = YES;
+- (void)makeBottomViewUenable {
+    _bottomView.userInteractionEnabled = NO;
 }
 
 #pragma mark - 填写IP地址
